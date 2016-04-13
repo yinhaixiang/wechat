@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.3.5",
     "koa": "^1.2.0",
+    "request": "^2.71.0",
     "sha1": "^1.1.1"
   }
 }
