@@ -115,7 +115,7 @@ module.exports = function(opts) {
           var toUser = message.FromUserName;
           var fromUser = message.ToUserName;
           self.status = 200;
-          self.type = 'application/xml|';
+          self.type = 'application/xml';
 
           var reply = `
             <xml>
