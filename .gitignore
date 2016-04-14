@@ -6,4 +6,4 @@ demo/solution
 *.log
 *.idea
 .tap
-config/wechat.txt
+config
