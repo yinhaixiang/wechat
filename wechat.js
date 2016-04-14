@@ -72,9 +72,18 @@ Wechat.prototype.updateAccessToken = function() {
   });
 };
 
+Wechat.prototype.reply = function() {
+  var content = this.body;
+  var message = this.weixinMessage;
+  var xml = util.tpl(content, message);
+  this.status = 200;
+  this.type = 'application/xml';
+  this.body = xml;
+};
 
 
-module.exports = function(opts) {
+
+module.exports = function(opts, handler) {
   var wechat = new Wechat(opts);
 
   return function *(next) {
@@ -107,30 +116,11 @@ module.exports = function(opts) {
 
       var content = yield util.parseXMLAsync(data);
       var message = util.formatMessage(content.xml);
-      console.log(message);
 
-      if(message.MsgType === 'event') {
-        if(message.Event === 'subscribe') {
-          var now = new Date().getTime();
-          var toUser = message.FromUserName;
-          var fromUser = message.ToUserName;
-          self.status = 200;
-          self.type = 'application/xml';
+      this.weixinMessage = message;
 
-          var reply = `
-            <xml>
-              <ToUserName><![CDATA[${toUser}]]></ToUserName>
-              <FromUserName><![CDATA[${fromUser}]]></FromUserName>
-              <CreateTime>${now}</CreateTime>
-              <MsgType><![CDATA[text]]></MsgType>
-              <Content><![CDATA[欢迎傻吊逍龙来看我]]></Content>
-            </xml>`;
-
-          console.log(reply);
-          self.body = reply;
-          return;
-        }
-      }
+      yield handler.call(this, next);
+      wechat.reply.call(this);
     }
   }
 };
