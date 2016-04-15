@@ -2,13 +2,14 @@
 
 var Koa = require('koa');
 var sha1 = require('sha1');
-var wechat = require('./wechat');
-var weixin = require('./weixin');
-var config = require('./config');
+var g = require('./wechat/g');
+var weixin = require('./wechat/weixin');
+var config = require('./wechat/config');
 
 var app = new Koa();
 
-app.use(wechat(config.wechat, weixin.reply));
+
+app.use(g(config.wechat, weixin.reply));
 
 app.listen(1234);
 

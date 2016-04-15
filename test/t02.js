@@ -1,1 +1,1 @@
-console.log(Array.toString());
+console.log(__dirname);
