@@ -15,7 +15,6 @@ var api = {
 };
 
 function Wechat(opts) {
-  console.log('init');
   var self = this;
   this.appID = opts.appID;
   this.appSecret = opts.appSecret;

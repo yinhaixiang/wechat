@@ -41,8 +41,6 @@ exports.reply = function *(next) {
         url: 'https://www.baidu.com/'
       }];
     } else if(content === '5') {
-      console.log('aaa', wechatApi.getAccessToken);
-      return;
       var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg');
       reply = {
         type: 'image',
