@@ -43,7 +43,7 @@ exports.reply = function *(next) {
     } else if(content === '5') {
       var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg');
       reply = {
-        type: 'image',
+        msgType: 'image',
         mediaId: data.media_id
       };
     }

@@ -32,7 +32,6 @@ Wechat.prototype.fetchAccessToken = function () {
       return Promise.resolve(self);
     }
   }
-
   self.getAccessToken()
     .then(function (data) {
       try {
@@ -78,7 +77,7 @@ Wechat.prototype.updateAccessToken = function () {
 
   return new Promise(function (resolve, reject) {
     request({url: url, json: true})
-      .then(function (res, body) {
+      .then(function (res) {
         var data = res.body;
         var now = new Date().getTime();
         var expires_in = now + (data.expires_in - 20) * 1000;
@@ -94,11 +93,10 @@ Wechat.prototype.uploadMaterial = function (type, fpath) {
     media: fs.createReadStream(fpath)
   };
 
-
   return new Promise(function (resolve, reject) {
     self.fetchAccessToken()
       .then(function (data) {
-        var url = api.upload + 'access_token' + data.access_token + '&type=' + type;
+        var url = api.upload + 'access_token=' + data.access_token + '&type=' + type;
         request({method: 'POST', url: url, formData: form, json: true})
           .then(function (res) {
             var _data = res.body;
