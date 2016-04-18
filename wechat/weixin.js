@@ -46,6 +46,15 @@ exports.reply = function *(next) {
         msgType: 'image',
         mediaId: data.media_id
       };
+    } else if(content === '6') {
+      var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg');
+      reply = {
+        msgType: 'music',
+        title: '回复音乐内容',
+        description: '放松一下',
+        musicUrl: 'http://mpge.5nd.com/2015/2015-9-12/66325/1.mp3',
+        thumbMediaId: data.media_id
+      }
     }
     this.body = reply;
   }
