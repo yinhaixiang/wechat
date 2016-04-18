@@ -1,5 +1,4 @@
 node_modules
-config/wechat.txt
 *.iml
 .DS_Store
 auto_response.pid
