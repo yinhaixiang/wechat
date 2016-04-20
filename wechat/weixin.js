@@ -33,20 +33,20 @@ exports.reply = function *(next) {
       reply = '22222';
     } else if (content === '3') {
       reply = '33333'
-    } else if(content === '4') {
+    } else if (content === '4') {
       reply = [{
         title: '技术改变世界',
         description: '只是个描述而已',
         picUrl: 'http://www.admin10000.com/UploadFiles/Document/201404/08/20140408151441270362.JPG',
         url: 'https://www.baidu.com/'
       }];
-    } else if(content === '5') {
+    } else if (content === '5') {
       var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg');
       reply = {
         msgType: 'image',
         mediaId: data.media_id
       };
-    } else if(content === '6') {
+    } else if (content === '6') {
       var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg');
       reply = {
         msgType: 'music',
@@ -55,14 +55,73 @@ exports.reply = function *(next) {
         musicUrl: 'http://mpge.5nd.com/2015/2015-9-12/66325/1.mp3',
         thumbMediaId: data.media_id
       };
-    } else if(content === '7') {
+    } else if (content === '7') {
       var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg', {type: 'image'});
       console.log(data);
       reply = {
         msgType: 'image',
         mediaId: data.media_id
       };
+    } else if (content === '8') {
+      var picData = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg', {});
+      var media = {
+        articles: [{
+          title: 'tututu',
+          thumb_media_id: picData.media_id,
+          author: 'XXX',
+          digest: '没有摘要',
+          show_cover_pic: 1,
+          content: '没有内容',
+          content_source_url: 'https://github.com'
+        }]
+      };
+
+      data = yield wechatApi.uploadMaterial('news', media, {});
+      data = yield wechatApi.fetchMaterial(data.media_id, 'news', {});
+      console.log(data);
+
+      var items = data.news_item;
+      var news = [];
+      items.forEach(function (it) {
+        news.push({
+          title: it.title,
+          description: it.digest,
+          picUrl: picData.url,
+          url: it.url
+        });
+      });
+      reply = news;
+    } else if (content === '9') {
+      var counts = yield wechatApi.countMaterial();
+      console.log('counts:', counts);
+
+      var results = yield [
+        wechatApi.batchMaterial({
+          type: 'image',
+          offset: 0,
+          count: 10
+        }),
+        wechatApi.batchMaterial({
+          type: 'video',
+          offset: 0,
+          count: 10
+        }),
+        wechatApi.batchMaterial({
+          type: 'voice',
+          offset: 0,
+          count: 10
+        }),
+        wechatApi.batchMaterial({
+          type: 'news',
+          offset: 0,
+          count: 10
+        })
+      ];
+
+      console.log('results:', results);
+      reply = '1';
     }
+
     this.body = reply;
   }
   yield next;
