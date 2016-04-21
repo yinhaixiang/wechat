@@ -130,6 +130,14 @@ exports.reply = function *(next) {
       console.log('查看自己的分组:', group2);
 
       reply = 'group done!';
+    } else if(content === '11') {
+      var user = yield wechatApi.fetchUsers(message.FromUserName);
+      console.log('user', user);
+      var openids = [{openid: message.FromUserName}];
+      var users = yield wechatApi.fetchUsers(openids);
+      console.log('users', users);
+
+      reply = JSON.stringify(user);
     }
 
     this.body = reply;

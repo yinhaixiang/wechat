@@ -33,6 +33,11 @@ var api = {
     move: prefix + 'groups/members/update?',
     batchMove: prefix + 'groups/members/batchupdate?',
     del: prefix + 'groups/delete?'
+  },
+  user: {
+    remark: prefix + 'user/info/updateremark?',
+    fetch: prefix + 'user/info?',
+    batchFetch: prefix + 'user/info/batchget?'
   }
 };
 
@@ -436,6 +441,67 @@ Wechat.prototype.deleteGroup = function (id) {
           }
         };
         request({method: 'POST', url: url, body: options, json: true})
+          .then(function (res) {
+            var _data = res.body;
+            if (_data) {
+              resolve(_data);
+            } else {
+              throw new Error('batch material fails');
+            }
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+  });
+};
+
+Wechat.prototype.remarkUser = function (openid, remark) {
+  var self = this;
+  return new Promise(function (resolve, reject) {
+    self.fetchAccessToken()
+      .then(function (data) {
+        var url = api.user.remark + 'access_token=' + data.access_token;
+        var options = {
+          openid: openid,
+          remark: remark
+        };
+        request({method: 'POST', url: url, body: options, json: true})
+          .then(function (res) {
+            var _data = res.body;
+            if (_data) {
+              resolve(_data);
+            } else {
+              throw new Error('batch material fails');
+            }
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+  });
+};
+
+Wechat.prototype.fetchUsers  = function (openids, lang) {
+  var self = this;
+  lang = lang || 'zh_CN';
+  return new Promise(function (resolve, reject) {
+    self.fetchAccessToken()
+      .then(function (data) {
+        var options = {
+          json: true
+        };
+        if(_.isArray(openids)) {
+          options.url = api.user.batchFetch + 'access_token=' + data.access_token;
+          options.body = {
+            user_list: openids
+          };
+          options.method = 'POST';
+        } else {
+          options.url = api.user.fetch + 'access_token=' + data.access_token + '&openid=' + openids + '&lang=' + lang;
+        }
+        console.log(options);
+        request(options)
           .then(function (res) {
             var _data = res.body;
             if (_data) {
