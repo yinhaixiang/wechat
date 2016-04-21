@@ -120,6 +120,16 @@ exports.reply = function *(next) {
 
       console.log('results:', results);
       reply = '1';
+    } else if(content === '10') {
+      var group = yield wechatApi.createGroup('wechat');
+      console.log('新分组:', group);
+      var groups = yield  wechatApi.fetchGroups();
+      console.log('新的分组列表:', groups);
+
+      var group2 = yield wechatApi.checkGroup(message.FromUserName);
+      console.log('查看自己的分组:', group2);
+
+      reply = 'group done!';
     }
 
     this.body = reply;
