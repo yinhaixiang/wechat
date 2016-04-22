@@ -48,6 +48,7 @@ exports.reply = function *(next) {
       };
     } else if (content === '6') {
       var data = yield wechatApi.uploadMaterial('image', __dirname + '/2.jpg');
+      console.log(data);
       reply = {
         msgType: 'music',
         title: '回复音乐内容',
@@ -138,6 +139,10 @@ exports.reply = function *(next) {
       console.log('users', users);
 
       reply = JSON.stringify(user);
+    } else if(content === '12') {
+      var userList = yield wechatApi.listUsers();
+      console.log(userList);
+      reply = userList.total;
     }
 
     this.body = reply;

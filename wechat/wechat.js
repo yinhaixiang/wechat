@@ -37,7 +37,8 @@ var api = {
   user: {
     remark: prefix + 'user/info/updateremark?',
     fetch: prefix + 'user/info?',
-    batchFetch: prefix + 'user/info/batchget?'
+    batchFetch: prefix + 'user/info/batchget?',
+    list: prefix + 'user/get?'
   }
 };
 
@@ -47,6 +48,7 @@ function Wechat(opts) {
   this.appSecret = opts.appSecret;
   this.getAccessToken = opts.getAccessToken;
   this.saveAccessToken = opts.saveAccessToken;
+  this.api = api;
 
   this.fetchAccessToken();
 
@@ -85,12 +87,10 @@ Wechat.prototype.isValidAccessToken = function (data) {
   if (!data || !data.access_token || !data.expires_in) {
     return false;
   }
-
   var access_token = data.access_token;
   var expires_in = data.expires_in;
   var now = new Date().getTime();
-
-  if (now < expires_in) {
+  if (now + 1000 * 60 * 60 < expires_in) {
     return true;
   } else {
     false;
@@ -502,6 +502,28 @@ Wechat.prototype.fetchUsers  = function (openids, lang) {
         }
         console.log(options);
         request(options)
+          .then(function (res) {
+            var _data = res.body;
+            if (_data) {
+              resolve(_data);
+            } else {
+              throw new Error('batch material fails');
+            }
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+  });
+};
+
+Wechat.prototype.listUsers = function () {
+  var self = this;
+  return new Promise(function (resolve, reject) {
+    self.fetchAccessToken()
+      .then(function (data) {
+        var url = api.user.list + 'access_token=' + data.access_token;
+        request({method: 'GET', url: url, json: true})
           .then(function (res) {
             var _data = res.body;
             if (_data) {
