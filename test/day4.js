@@ -44,7 +44,7 @@ function count(filePath) {
     // 增加一个属性值记录次数，便于后文引用;
     this.count = num;
 
-    yield* next;
+    yield next;
   }
 }
 
